@@ -1,54 +1,55 @@
-import React, {useState, useEffect} from 'react'
+import React from 'react'
 import './App.css';
-import fetchTShirtData from './fetchGraphQL';
+import graphql from 'babel-plugin-relay/macro';
+import {  RelayEnvironmentProvider,  loadQuery,  usePreloadedQuery,} from 'react-relay/hooks';
+import RelayEnvironment from './RelayEnvironment';
 
-function App() {
-  const [tshirts, setTshirts] = useState(null);
-  // When the component mounts we'll fetch data
-  useEffect(() => {
-    let isMounted = true;
-    fetchTShirtData(`
-       query{
-          tshirts{
-            id
-            color
-            pic_url
-            price
-          }
-        }
-      `).then(response => {
-      // Avoid updating state if the component unmounted before the fetch completes
-      if (!isMounted) {
-        return;
-      }
-      const data = response.data;
-      console.log('data', data)
-    }).catch(error => {
-      console.error(error);
-    });
+const { Suspense } = React;
 
-    return () => {
-      isMounted = false;
-    };
-  }, [fetchTShirtData]);
+// Define a query
+const TshirtDetailsQuery = graphql`
+query AppQuery{
+   tshirts{
+     _id
+     color
+     pic_url
+     price
+   }
+ }
+`;
 
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+const preloadedQuery = loadQuery(RelayEnvironment, TshirtDetailsQuery, {  /* query variables */});
+
+function App(props) {
+  const data = usePreloadedQuery(TshirtDetailsQuery, props.preloadedQuery);
+    console.log("data", data)
+    return (    
+        <div className="App">      
+          <header className="App-header">        
+            <p>
+             Edit <code>src/App.js</code> and save to reload.
+            </p>
+            <a
+             className="App-link"
+             href="https://reactjs.org"
+             target="_blank"
+             rel="noopener noreferrer"
+             >
+            Learn React
+           </a>  
+          </header>    
+        </div>  
+    );
 }
 
-export default App;
+function AppRoot(props) {
+  return (
+    <RelayEnvironmentProvider environment={RelayEnvironment}>
+         <Suspense fallback={'Loading...'}>        
+           <App preloadedQuery={preloadedQuery} />      
+         </Suspense>
+    </RelayEnvironmentProvider>
+  );
+}
+export default AppRoot;

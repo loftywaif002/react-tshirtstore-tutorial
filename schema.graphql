@@ -1,0 +1,10 @@
+type Tshirt {
+  _id: Int!
+  color: String!
+  pic_url: String!
+  price: Int!
+}
+
+type Query {
+  tshirts: [Tshirt]
+}
