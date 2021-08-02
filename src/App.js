@@ -47,7 +47,6 @@ const getColor = (color) => {
 
 function App(props) {
   const data = usePreloadedQuery(TshirtDetailsQuery, props.preloadedQuery);
-    console.log("data", data)
     return (
       <> 
         <Box pad="small" align="start">    
