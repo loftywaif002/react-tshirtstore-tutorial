@@ -3,11 +3,31 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { Grommet } from 'grommet';
+const theme = {
+  global: {
+    font: {
+      family: `Comic Sans MS, -apple-system, BlinkMacSystemFont, 
+          "Segoe UI", 
+          Roboto`,
+      },
+    },
+  card: {
+      elevation: 'none',
+      background: 'light-2',
+    
+    footer: {
+      pad: 'medium',
+    },
+  },
+
+};
+
 
 ReactDOM.render(
-  <React.StrictMode>
+  <Grommet theme={theme}>
     <App />
-  </React.StrictMode>,
+  </Grommet>,
   document.getElementById('root')
 );
 
